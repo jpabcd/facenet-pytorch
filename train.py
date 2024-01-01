@@ -109,9 +109,9 @@ if __name__ == "__main__":
     #                   batch_size需要为3的倍数
     #   Epoch           模型总共训练的epoch
     #------------------------------------------------------#
-    batch_size      = 96
+    batch_size      = 3
     Init_Epoch      = 0
-    Epoch           = 100
+    Epoch           = 1
 
     #------------------------------------------------------------------#
     #   其它训练参数：学习率、优化器、学习率下降有关
@@ -257,8 +257,12 @@ if __name__ == "__main__":
     #---------------------------------#
     #   LFW估计
     #---------------------------------#
-    LFW_loader = torch.utils.data.DataLoader(
-        LFWDataset(dir=lfw_dir_path, pairs_path=lfw_pairs_path, image_size=input_shape), batch_size=32, shuffle=False) if lfw_eval_flag else None
+    lfw_dataset=LFWDataset(dir=lfw_dir_path, pairs_path=lfw_pairs_path, image_size=input_shape)
+    if lfw_eval_flag:
+        LFW_loader = torch.utils.data.DataLoader(
+            lfw_dataset, batch_size=32, shuffle=False)
+    else:
+        LFW_loader = None 
 
     #-------------------------------------------------------#
     #   0.01用于验证，0.99用于训练

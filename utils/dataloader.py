@@ -161,7 +161,7 @@ class LFWDataset(datasets.ImageFolder):
             for line in f.readlines()[1:]:
                 pair = line.strip().split()
                 pairs.append(pair)
-        return np.array(pairs)
+        return pairs
 
     def get_lfw_paths(self,lfw_dir,file_ext="jpg"):
 

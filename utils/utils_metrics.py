@@ -37,8 +37,8 @@ def calculate_roc(thresholds, distances, labels, nrof_folds=10):
         for threshold_idx, threshold in enumerate(thresholds):
             tprs[fold_idx,threshold_idx], fprs[fold_idx,threshold_idx], _ = calculate_accuracy(threshold, distances[test_set], labels[test_set])
         _, _, accuracy[fold_idx] = calculate_accuracy(thresholds[best_threshold_index], distances[test_set], labels[test_set])
-        tpr = np.mean(tprs,0)
-        fpr = np.mean(fprs,0)
+    tpr = np.mean(tprs,0)
+    fpr = np.mean(fprs,0)
     return tpr, fpr, accuracy, thresholds[best_threshold_index]
 
 def calculate_accuracy(threshold, dist, actual_issame):
@@ -69,7 +69,10 @@ def calculate_val(thresholds, distances, labels, far_target=1e-3, nrof_folds=10)
         for threshold_idx, threshold in enumerate(thresholds):
             _, far_train[threshold_idx] = calculate_val_far(threshold, distances[train_set], labels[train_set])
         if np.max(far_train)>=far_target:
-            f = interpolate.interp1d(far_train, thresholds, kind='slinear')
+            # 去除重复值
+            unique_far_train, unique_indices = np.unique(far_train, return_index=True)
+            unique_thresholds = thresholds[unique_indices]
+            f = interpolate.interp1d(unique_far_train, unique_thresholds, kind='slinear')
             threshold = f(far_target)
         else:
             threshold = 0.0
